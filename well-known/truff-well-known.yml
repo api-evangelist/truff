@@ -1,0 +1,93 @@
+generated: '2026-08-30'
+method: probed
+source: >-
+  Direct unauthenticated GET of each /.well-known/ path on every TRUFF-controlled host
+  (www.truff.com, truff.com, shop.truff.com), 2026-08-30.
+note: >-
+  TRUFF's storefront runs on Shopify. The three documents that returned 200 are served from
+  TRUFF's own hosts and are scoped to TRUFF's store (the UCP profile names merchant "TRUFF",
+  merchant_origin shop.truff.com, shop id 21822603), but they are emitted by the Shopify
+  platform rather than authored by TRUFF. The OIDC/OAuth metadata issuer is
+  https://shopify.com/authentication/21822603 — Shopify's hosted Customer Accounts identity
+  service for this store, not an identity provider TRUFF operates. Recorded as served,
+  attributed as platform-provided.
+hosts:
+- host: shop.truff.com
+  documents:
+  - path: /.well-known/ucp
+    status: 200
+    content_type: application/json
+    file: truff-ucp.json
+    note: >-
+      Universal Commerce Protocol merchant profile, version 2026-08-25. Declares the MCP
+      shopping service endpoint, checkout/cart/fulfillment/discount/catalog capabilities and
+      the Google Pay / Shopify Card / Shop Pay payment handlers for this store.
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: application/json
+    file: truff-openid-configuration.json
+    note: >-
+      Shopify Customer Accounts OIDC discovery document for shop 21822603. Governs shopper
+      accounts on the storefront; it is not an API-developer identity surface.
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+    file: truff-oauth-authorization-server.json
+    note: Identical body to the OIDC discovery document (RFC 8414 alias).
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: www.truff.com
+  documents:
+  - path: /.well-known/ucp
+    status: 200
+    content_type: application/json
+    file: truff-ucp.json
+    note: Same UCP merchant profile as shop.truff.com; not saved twice.
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: truff.com
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: application/json
+    file: truff-openid-configuration.json
+    note: Same body as shop.truff.com; not saved twice.
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+    file: truff-oauth-authorization-server.json
+    note: Same body as shop.truff.com; not saved twice.
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+summary:
+  hosts_probed: 3
+  paths_probed: 20
+  documents_served: 3
+  distinct_documents: 3
+  agent_card_found: false
+  security_txt_found: false
+  api_catalog_found: false

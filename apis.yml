@@ -1,18 +1,85 @@
 aid: truff
 name: TRUFF
-description: 'TRUFF is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  TRUFF is a Los Angeles-based luxury condiments company founded in 2017 by Nick Ajluni and Nick
+  Guillen, known for its black-truffle-infused hot sauce and a pantry line that has grown to include
+  truffle oil, pasta sauce, aioli, mayonnaise and salt. The brand began as a digitally-native
+  direct-to-consumer business selling through its own storefront at truff.com and has since expanded
+  into a multichannel food business carried in more than 20,000 retail stores including Whole Foods,
+  Kroger, Publix and Target, alongside foodservice collaborations with restaurant chains. SKKY
+  Partners took a significant minority stake in the company in November 2023. TRUFF is a consumer
+  packaged goods manufacturer, not a software vendor: it publishes no developer portal, no OpenAPI,
+  no SDKs and issues no API keys. It does, however, expose a live and completely unauthenticated
+  agent commerce surface at shop.truff.com — a Universal Commerce Protocol (UCP) shopping service
+  reachable over MCP, advertised in the store's own llms.txt and /.well-known/ucp, through which an
+  agent can search the catalog, build a cart and complete a purchase. That surface is Shopify's
+  platform-native UCP implementation running under TRUFF's merchant identity rather than something
+  TRUFF engineered, and it is recorded here with that provenance.
 url: https://raw.githubusercontent.com/api-evangelist/truff/refs/heads/main/apis.yml
+image: https://storefront-direct-upload.s3.amazonaws.com/8ee9e03b-afe7-492e-aaba-bee247bf97b3/favicon.png
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enriched
 specificationVersion: '0.20'
 created: '2026-08-30'
 modified: '2026-08-30'
 tags:
 - Company
-apis: []
+- Consumer Packaged Goods
+- Food and Beverage
+- Condiments
+- Direct to Consumer
+- Retail
+- Ecommerce
+- Agentic Commerce
+- Universal Commerce Protocol
+- Shopify
+apis:
+- aid: truff-ucp-shopping-mcp
+  name: TRUFF Store UCP Shopping API
+  description: >-
+    The agent-facing commerce surface for TRUFF's online store. A Model Context Protocol endpoint at
+    https://shop.truff.com/api/ucp/mcp implements the Universal Commerce Protocol dev.ucp.shopping
+    service (version 2026-08-25, with 2026-04-08 and 2026-01-23 still supported) and answers
+    unauthenticated with 13 tools covering catalog search and lookup, product detail, cart create /
+    read / update / cancel, checkout create / read / update / complete / cancel, and order lookup.
+    complete_checkout requires an idempotency key and, per the store's published agent instructions,
+    contemporaneous buyer approval before payment. The implementation is emitted by the Shopify
+    platform for every store on it; the endpoint, the merchant identity and the data are TRUFF's.
+  humanURL: https://shop.truff.com/llms.txt
+  baseURL: https://shop.truff.com/api/ucp/mcp
+  tags:
+  - MCP
+  - Universal Commerce Protocol
+  - Agentic Commerce
+  - Catalog
+  - Cart
+  - Checkout
+  - Orders
+  properties:
+  - type: MCPServer
+    url: mcp/truff-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/truff-tool-crosswalk.yml
+  - type: Documentation
+    url: https://shop.truff.com/agents.md
+  - type: LLMsTxt
+    url: llms/truff-llms.txt
+  - type: WellKnown
+    url: well-known/truff-well-known.yml
+  - type: Authentication
+    url: authentication/truff-authentication.yml
+  - type: Conventions
+    url: conventions/truff-conventions.yml
+  - type: Idempotency
+    url: conventions/truff-conventions.yml
+  - type: Conformance
+    url: conformance/truff-conformance.yml
+  - type: RateLimits
+    url: rate-limits/truff-rate-limits.yml
+  - type: Lifecycle
+    url: lifecycle/truff-lifecycle.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +87,49 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://www.truff.com/
+- type: About
+  url: https://www.truff.com/pages/about-us
+- type: Blog
+  url: https://www.truff.com/blogs/the-sauce
+- type: Support
+  url: https://www.truff.com/pages/contact-us
+- type: HelpCenter
+  url: https://www.truff.com/pages/faqs
+- type: TermsOfService
+  url: https://www.truff.com/pages/terms-of-service
+- type: PrivacyPolicy
+  url: https://www.truff.com/pages/privacy-policy
+- type: Documentation
+  url: https://shop.truff.com/agents.md
+- type: MCPServer
+  url: mcp/truff-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/truff-tool-crosswalk.yml
+- type: LLMsTxt
+  url: llms/truff-llms.txt
+- type: WellKnown
+  url: well-known/truff-well-known.yml
+- type: OpenIDConnect
+  url: well-known/truff-openid-configuration.json
+- type: Authentication
+  url: authentication/truff-authentication.yml
+- type: Conventions
+  url: conventions/truff-conventions.yml
+- type: Idempotency
+  url: conventions/truff-conventions.yml
+- type: Conformance
+  url: conformance/truff-conformance.yml
+- type: RateLimits
+  url: rate-limits/truff-rate-limits.yml
+- type: Plans
+  url: plans/truff-plans-pricing.yml
+- type: Lifecycle
+  url: lifecycle/truff-lifecycle.yml
+- type: DomainSecurity
+  url: security/truff-domain-security.yml
+x-enrichment:
+  date: '2026-08-30'
+  status: enriched
+  artifacts_added: 15
+  pass: local-v1

@@ -1,0 +1,52 @@
+generated: '2026-08-30'
+method: probed
+source: >-
+  https://shop.truff.com/.well-known/ucp (HTTP 200) and https://shop.truff.com/llms.txt
+  (HTTP 200), probed 2026-08-30.
+summary: >-
+  TRUFF ships no versioning policy, no deprecation policy, no SLA, no changelog and no status
+  page of its own. The only lifecycle signal on the surface is the UCP protocol version
+  negotiation the Shopify platform emits, which does show three concurrently supported dated
+  versions.
+versioning:
+  scheme: dated protocol version, negotiated via /.well-known/ucp
+  current: '2026-08-25'
+  supported:
+  - version: '2026-08-25'
+    label: latest stable
+    profile: https://truff-hot-sauce.myshopify.com/.well-known/ucp/2026-08-25
+  - version: '2026-04-08'
+    profile: https://truff-hot-sauce.myshopify.com/.well-known/ucp/2026-04-08
+  - version: '2026-01-23'
+    profile: https://truff-hot-sauce.myshopify.com/.well-known/ucp/2026-01-23
+  note: >-
+    Platform-level, not TRUFF-level. TRUFF does not choose or announce these versions and
+    publishes nothing about when an older one stops being served.
+deprecation_policy:
+  published: false
+  sunset_header: not observed
+  deprecation_header: not observed
+  note: >-
+    No RFC 8594 Sunset or Deprecation header was returned on any probed response, and no
+    deprecation policy page exists. Three older UCP versions remain listed as supported with
+    no stated end date.
+status_page:
+  published: false
+  note: >-
+    No status.truff.com, no /status page, and no status link in the storefront footer or in
+    llms.txt. Storefront availability rides on the Shopify platform, whose status page belongs
+    to Shopify, not to TRUFF.
+sla:
+  published: false
+changelog:
+  published: false
+  note: >-
+    No dated API changelog. The company blogs (/blogs/the-sauce, /blogs/truff-kitchen,
+    /blogs/blog) are recipe and brand content, not release notes.
+deprecated_operations: []
+x-evidence:
+- url: https://shop.truff.com/.well-known/ucp
+  status: 200
+- url: https://www.truff.com/sitemap_static.xml
+  status: 200
+  note: Six static URLs; no status or changelog page.

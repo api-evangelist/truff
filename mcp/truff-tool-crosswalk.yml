@@ -1,0 +1,89 @@
+generated: '2026-08-30'
+method: derived
+source: >-
+  Derived from mcp/truff-mcp-tools.json (live tools/list, HTTP 200) and the "Read-Only
+  Browsing" REST endpoints that https://shop.truff.com/llms.txt documents by path.
+note: >-
+  TRUFF publishes no OpenAPI, so the REST side of this crosswalk binds to documented URL
+  PATHS rather than to operationIds. Nothing here is invented: every path on the right-hand
+  side is one llms.txt names, and the two that were probed are marked with their status.
+  Confidence is set accordingly.
+surfaces:
+  openapi: none published
+  graphql: none published on a TRUFF host
+  mcp:
+    url: https://shop.truff.com/api/ucp/mcp
+    gated: false
+    status: 200
+  rest_readonly:
+    host: https://shop.truff.com
+    gated: false
+    documented_at: https://shop.truff.com/llms.txt
+    note: Shopify storefront JSON endpoints, documented by TRUFF's own agent instructions.
+crosswalk:
+- tool: search_catalog
+  category: catalog
+  rest:
+  - GET /search?q={query}&type=product
+  binding: path
+  confidence: medium
+  note: >-
+    Both search TRUFF's product catalog, but the REST form returns a storefront search page
+    payload and the tool returns UCP catalog objects. Not field-for-field equivalent.
+- tool: lookup_catalog
+  category: catalog
+  rest:
+  - GET /products.json
+  - GET /collections/{handle}/products.json
+  binding: path
+  confidence: medium
+  note: >-
+    GET https://shop.truff.com/products.json?limit=3 returned HTTP 200 on 2026-08-30. Bulk
+    product retrieval by identifier maps to these collection listings only approximately.
+- tool: get_product
+  category: catalog
+  rest:
+  - GET /products/{handle}.json
+  binding: path
+  confidence: high
+  note: Single-product detail by identifier; closest one-to-one pairing on the surface.
+mcp_only:
+- tool: create_cart
+  reason: No anonymous REST cart-creation endpoint is documented for agents.
+- tool: get_cart
+  reason: Cart state is session-bound on the storefront; no documented JSON read endpoint.
+- tool: update_cart
+  reason: Write surface exists only through UCP.
+- tool: cancel_cart
+  reason: Write surface exists only through UCP.
+- tool: create_checkout
+  reason: Checkout is UCP-only; the storefront checkout is a browser flow, not a documented API.
+- tool: get_checkout
+  reason: UCP-only.
+- tool: update_checkout
+  reason: UCP-only.
+- tool: complete_checkout
+  reason: >-
+    UCP-only, and the only idempotent operation on the surface
+    (meta.idempotency-key required). Requires contemporaneous buyer approval.
+- tool: cancel_checkout
+  reason: UCP-only.
+- tool: get_order
+  reason: >-
+    Order lookup has no anonymous REST equivalent; the storefront order surface sits behind
+    Shopify Customer Accounts OIDC.
+rest_only:
+- path: GET /collections/all
+  reason: HTML collection browse page; no MCP tool enumerates whole collections.
+- path: GET /collections/{handle}
+  reason: HTML collection page.
+- path: GET /products/{handle}
+  reason: HTML product page.
+- path: GET /sitemap.xml
+  reason: Crawl surface, outside the tool contract.
+coverage:
+  mcp_tools: 13
+  mapped_to_rest: 3
+  mcp_only: 10
+  rest_only: 4
+  openapi_operations: 0

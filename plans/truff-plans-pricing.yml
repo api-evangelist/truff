@@ -1,0 +1,21 @@
+generated: '2026-08-30'
+method: searched
+source: >-
+  https://www.truff.com/ sitemap walk (sitemap_pages.xml, sitemap_static.xml — HTTP 200 each)
+  and https://shop.truff.com/llms.txt, 2026-08-30.
+plan_count: 0
+note: >-
+  TRUFF publishes no API plans, tiers, quotas or developer pricing of any kind, because it
+  sells no API. The company's pricing pages price physical condiments. The agent-facing UCP
+  MCP surface at https://shop.truff.com/api/ucp/mcp is free and unmetered to callers — it
+  exists to sell product, not to be sold. There is no free tier, no paid tier, no
+  contact-sales gate and no overage: there is simply no commercial API offer. Recorded as an
+  explicit zero rather than omitted.
+plans: []
+x-evidence:
+- url: https://www.truff.com/sitemap_pages.xml
+  status: 200
+  note: 35 page URLs; none is a developer, API or API-pricing page.
+- url: https://shop.truff.com/api/ucp/mcp
+  status: 200
+  note: Answers unauthenticated with no billing, entitlement or quota concept.

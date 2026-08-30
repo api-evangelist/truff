@@ -1,0 +1,63 @@
+generated: '2026-08-30'
+method: probed
+source: >-
+  POST https://shop.truff.com/api/ucp/mcp tools/list (HTTP 200, no credentials sent) and
+  GET https://shop.truff.com/.well-known/openid-configuration (HTTP 200), probed 2026-08-30.
+docs: https://shop.truff.com/llms.txt
+summary: >-
+  TRUFF's agent-facing commerce surface is anonymous. The UCP MCP endpoint answered a full
+  tools/list with no Authorization header, no API key and no OAuth challenge, and the
+  published agent instructions describe the read-only storefront JSON endpoints as requiring
+  no authentication. There is no API-key issuance, no developer registration and no developer
+  OAuth application flow anywhere on TRUFF's hosts. The one identity surface that exists is
+  Shopify's hosted Customer Accounts OIDC provider, which authenticates SHOPPERS to the
+  storefront — it is not a developer credential.
+schemes:
+- id: none
+  type: none
+  applies_to: https://shop.truff.com/api/ucp/mcp
+  evidence: >-
+    Unauthenticated POST returned HTTP 200 with 13 tools and their inputSchemas; no 401, no
+    WWW-Authenticate header, no oauth-protected-resource metadata.
+  note: >-
+    Caller identity is asserted rather than authenticated: every tool requires
+    meta.ucp-agent.profile, a URI naming the calling agent. That is attribution, not
+    authentication.
+- id: none-storefront-json
+  type: none
+  applies_to: >-
+    https://shop.truff.com/products.json, /products/{handle}.json,
+    /collections/{handle}/products.json, /search?q=&type=product
+  evidence: >-
+    GET https://shop.truff.com/products.json?limit=3 returned HTTP 200 application/json.
+    llms.txt documents these under "Read-Only Browsing (No Authentication Required)".
+- id: shopify-customer-accounts-oidc
+  type: openIdConnect
+  applies_to: storefront shopper accounts (not the API surface)
+  issuer: https://shopify.com/authentication/21822603
+  authorization_endpoint: https://shopify.com/authentication/21822603/oauth/authorize
+  token_endpoint: https://shopify.com/authentication/21822603/oauth/token
+  jwks_uri: https://shopify.com/authentication/21822603/.well-known/jwks.json
+  grant_types: [authorization_code, refresh_token, 'urn:ietf:params:oauth:grant-type:jwt-bearer']
+  pkce: S256
+  id_token_alg: RS256
+  scopes:
+  - openid
+  - email
+  - customer-account-api:full
+  - customer-account-mcp-api:full
+  evidence: >-
+    Served at https://shop.truff.com/.well-known/openid-configuration and
+    https://truff.com/.well-known/openid-configuration, HTTP 200.
+  note: >-
+    Platform-provided. The issuer is Shopify's per-shop identity service; TRUFF does not
+    operate it and publishes no client-registration path for it.
+payment_credentials:
+  note: >-
+    Payment is handled by declared UCP payment handlers (Google Pay, Shopify Card, Shop Pay).
+    Agents never handle raw card credentials; complete_checkout takes a tokenized instrument
+    and requires contemporaneous buyer approval.
+gaps:
+- No developer API keys are issued and no developer portal exists.
+- No /.well-known/oauth-protected-resource is served for the MCP endpoint.
+- No security.txt on any host.

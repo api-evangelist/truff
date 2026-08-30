@@ -1,0 +1,128 @@
+generated: '2026-08-30'
+method: derived
+source: >-
+  Derived from mcp/truff-mcp-tools.json (live tools/list, HTTP 200 2026-08-30),
+  well-known/truff-ucp.json and llms/truff-llms.txt.
+scope: >-
+  Cross-cutting runtime semantics of TRUFF's UCP shopping MCP surface at
+  https://shop.truff.com/api/ucp/mcp and the anonymous storefront JSON endpoints.
+auth_style:
+  style: none
+  detail: >-
+    No credential is required. Callers self-identify with meta.ucp-agent.profile, a URI
+    naming the calling agent, required on every tool.
+  see_also: authentication/truff-authentication.yml
+protocol:
+  transport: JSON-RPC 2.0 over HTTP POST
+  content_type: application/json
+  accept: application/json, text/event-stream
+  discovery: tools/list
+idempotency:
+  supported: partial
+  mechanism: request field
+  field: meta.idempotency-key
+  scope: complete_checkout only
+  required: true
+  retention: not published
+  detail: >-
+    complete_checkout — the only operation that moves money — declares meta.idempotency-key as
+    a REQUIRED string. No other write tool (create_cart, update_cart, cancel_cart,
+    create_checkout, update_checkout, cancel_checkout) accepts or requires a key, so a retried
+    cart or checkout mutation is not protected.
+  evidence: >-
+    mcp/truff-mcp-tools.json — complete_checkout.inputSchema.properties.meta.required
+    == ["ucp-agent", "idempotency-key"].
+pagination:
+  style: not published
+  detail: >-
+    search_catalog and lookup_catalog take a catalog object; no page/cursor/limit convention is
+    documented in the tool descriptions. The storefront JSON endpoints accept Shopify's
+    ?limit= and ?page= query parameters (products.json?limit=3 returned HTTP 200), but TRUFF
+    publishes no pagination reference of its own.
+money:
+  representation: integer minor units + ISO 4217 currency code
+  example: '{"amount": 2500, "currency": "USD"} is $25.00'
+  detail: >-
+    Stated verbatim in every one of the 13 tool descriptions, including the instruction to
+    convert to major units before quoting a price to a buyer and the zero-decimal-currency
+    caveat (JPY).
+buyer_context:
+  fields: [context.address_country, context.currency]
+  detail: >-
+    llms.txt instructs agents to pass buyer context for accurate pricing and availability.
+request_tracing:
+  header: x-request-id
+  detail: >-
+    Observed on live responses from shop.truff.com (e.g.
+    43136c9f-ed24-4adb-b4e5-aa7a51bb95e3-1788114114). Not documented by TRUFF.
+  observed: true
+  documented: false
+versioning:
+  style: dated protocol versions
+  current: '2026-08-25'
+  supported: ['2026-08-25', '2026-04-08', '2026-01-23']
+  detail: >-
+    Versioning is at the UCP protocol level, negotiated through
+    /.well-known/ucp supported_versions. There is no TRUFF-specific API version.
+  see_also: lifecycle/truff-lifecycle.yml
+error_envelope:
+  style: JSON-RPC 2.0 error object
+  problem_json: false
+  detail: >-
+    No RFC 9457 application/problem+json envelope and no published error-code catalog.
+    complete_checkout's description says it returns "any errors encountered" in-band alongside
+    the order id, but the error shapes are not enumerated by TRUFF.
+rate_limit_signaling:
+  documented: true
+  headers_published: false
+  detail: >-
+    llms.txt states "The MCP endpoint is rate-limited per IP. Back off on 429 responses." No
+    limit, window or burst is published and no RateLimit-*/X-RateLimit-* header was present on
+    the successful probe. Shopify-specific shopify-complexity-score and
+    shopify-complexity-score-v2 headers were observed (310 / 31 on a tools/list call), which
+    signal request cost but are undocumented by TRUFF.
+  see_also: rate-limits/truff-rate-limits.yml
+dry_run_mode:
+  supported: false
+  grade: absent
+  detail: >-
+    No test mode, sandbox, preview or simulate flag exists on any tool. create_checkout against
+    the live store is the only way to see totals, taxes and shipping — an agent cannot rehearse
+    a purchase.
+reversibility:
+  grade: documented
+  detail: >-
+    Reversal paths exist for both pre-payment write surfaces, but no reversal window is stated
+    anywhere in the tool schemas, the UCP profile or the published agent instructions, and no
+    post-payment reversal is exposed at all.
+  surfaces:
+  - write: create_cart / update_cart
+    reversal: cancel_cart
+    operation: cancel_cart
+    window: not stated
+    docs: https://shop.truff.com/llms.txt
+    note: >-
+      Tool description is one line, "Cancels a cart." No expiry, no TTL, no condition on when
+      cancellation stops being possible.
+  - write: create_checkout / update_checkout
+    reversal: cancel_checkout
+    operation: cancel_checkout
+    window: not stated
+    docs: https://shop.truff.com/llms.txt
+    note: >-
+      "Cancels a checkout." TRUFF does not state whether a checkout can be cancelled after
+      complete_checkout has been called, which is exactly the question an agent needs answered
+      before it acts.
+  - write: complete_checkout
+    reversal: none exposed
+    operation: null
+    window: not stated
+    docs: https://www.truff.com/pages/return-policy
+    note: >-
+      Once complete_checkout succeeds the surface exposes no refund, void, reverse or
+      cancel_order tool — get_order is read-only. Reversal after payment falls back to the
+      human return policy on the marketing site; no window is asserted here because none is
+      stated in machine-readable form.
+  gap: >-
+    Stating a cancellation window on cancel_cart and cancel_checkout, and exposing or naming
+    the post-payment reversal path, would move this from documented to verified.

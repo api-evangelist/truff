@@ -1,0 +1,37 @@
+generated: '2026-08-30'
+method: searched
+source: https://shop.truff.com/llms.txt
+docs: https://shop.truff.com/llms.txt
+limit_count: 0
+note: >-
+  TRUFF's published agent instructions acknowledge a limit but publish no number: "The MCP
+  endpoint is rate-limited per IP. Back off on 429 responses." No limit, window, burst or
+  quota is stated, and no RateLimit-* / X-RateLimit-* / Retry-After header was returned on a
+  successful unauthenticated tools/list probe on 2026-08-30. An honest zero: the policy is
+  named, the runtime signal an agent would actually need is not.
+policy:
+  scope: per-ip
+  applies_to: https://shop.truff.com/api/ucp/mcp
+  limit: not published
+  window: not published
+  burst: not published
+  exhaustion_status: 429
+  guidance: Back off on 429 responses.
+response_headers:
+  ratelimit: []
+  retry_after: not observed
+  observed_cost_headers:
+  - name: shopify-complexity-score
+    example: '310'
+    note: >-
+      Present on the live tools/list response. A Shopify platform request-cost signal, not
+      documented by TRUFF and not a limit/remaining/reset triple.
+  - name: shopify-complexity-score-v2
+    example: '31'
+limits: []
+x-evidence:
+- url: https://shop.truff.com/llms.txt
+  status: 200
+- url: https://shop.truff.com/api/ucp/mcp
+  status: 200
+  note: POST tools/list; no rate-limit headers present on the response.
