@@ -31,6 +31,17 @@ tags:
 - Condiments
 - Direct to Consumer
 - Retail
+- E-Commerce
+- Agentic Commerce
+- Universal Commerce Protocol
+- Shopify
+tags_raw:
+- Company
+- Consumer Packaged Goods
+- Food and Beverage
+- Condiments
+- Direct to Consumer
+- Retail
 - Ecommerce
 - Agentic Commerce
 - Universal Commerce Protocol
@@ -50,6 +61,14 @@ apis:
   humanURL: https://shop.truff.com/llms.txt
   baseURL: https://shop.truff.com/api/ucp/mcp
   tags:
+  - MCP
+  - Universal Commerce Protocol
+  - Agentic Commerce
+  - Catalog
+  - Cart
+  - Checkout
+  - Order
+  tags_raw:
   - MCP
   - Universal Commerce Protocol
   - Agentic Commerce
