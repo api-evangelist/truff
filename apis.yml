@@ -16,6 +16,20 @@ description: >-
   platform-native UCP implementation running under TRUFF's merchant identity rather than something
   TRUFF engineered, and it is recorded here with that provenance.
 url: https://raw.githubusercontent.com/api-evangelist/truff/refs/heads/main/apis.yml
+accessModel:
+  pricing: unknown
+  onboarding: open
+  trial: false
+  try_now: false
+  public: true
+  label: Open access
+  confidence: medium
+  source:
+  - authentication
+  - rate-limits
+  - security
+  generated: '2026-09-02'
+  method: derived
 image: https://storefront-direct-upload.s3.amazonaws.com/8ee9e03b-afe7-492e-aaba-bee247bf97b3/favicon.png
 x-type: company
 x-source: harvest:secondary-market
