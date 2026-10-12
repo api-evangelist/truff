@@ -1,0 +1,16 @@
+generated: '2026-10-12'
+method: none
+source:
+- https://zapier.com/apps/truff/integrations
+- https://n8n.io/integrations/truff/
+- https://composio.dev/toolkits/truff
+- https://monid.ai/tools/truff
+checked:
+- https://composio.dev/toolkits/truff
+- https://monid.ai/tools/truff
+- https://n8n.io/integrations/truff/
+- https://zapier.com/apps/truff/integrations
+summary: null
+marketplace_apps: []
+edges: []
+templates: []
